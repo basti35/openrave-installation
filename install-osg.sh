@@ -6,6 +6,8 @@
 # Description:
 #   OpenRAVE Installation Script: OpenSceneGraph
 
+source `dirname $0`/include-me.sh
+
 # Check ubuntu version
 UBUNTU_VER=$(lsb_release -sr)
 if [ ${UBUNTU_VER} != '14.04' ] && [ ${UBUNTU_VER} != '16.04' ] && [ ${UBUNTU_VER} != '18.04' ] \
@@ -21,7 +23,7 @@ echo ""
 echo "Installing OpenSceneGraph 3.4 from source (Commit ${OSG_COMMIT})..."
 echo ""
 
-mkdir -p ~/git; cd ~/git
+mkdir -p ${REPO_FOLDER}; cd ${REPO_FOLDER}
 git clone https://github.com/openscenegraph/OpenSceneGraph.git
 cd OpenSceneGraph; git reset --hard ${OSG_COMMIT}
 mkdir build; cd build
@@ -29,8 +31,8 @@ mkdir build; cd build
 if [ ${UBUNTU_VER} = '14.04' ]; then
   cmake ..
 elif [ ${UBUNTU_VER} = '16.04' ] || [ ${UBUNTU_VER} = '18.04' ] || [ ${UBUNTU_VER} = '20.04' ]; then
-  cmake -DDESIRED_QT_VERSION=4 ..
+  cmake -DDESIRED_QT_VERSION=4 -DCMAKE_INSTALL_PREFIX=${REPO_FOLDER}/deps ..
 fi
 make -j `nproc`
-sudo make install
-sudo make install_ld_conf
+make install
+#sudo make install_ld_conf
